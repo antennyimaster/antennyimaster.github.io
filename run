@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Обновление системы
+sudo apt update -y && sudo apt upgrade -y
+
+# Установка утилит
+sudo apt install -y mc
+sudo apt install -y curl
+sudo apt install -y nmap
+
+# Отключение двустороннего пинга на VPS:
+echo 1 | sudo tee /proc/sys/net/ipv4/icmp_echo_ignore_all
+
+# Установка и настройка Fail2Ban
+sudo apt install -y fail2ban
+sudo systemctl enable fail2ban
+
+# Настройка брандмауэра UFW
+sudo apt install -y ufw
+sudo ufw default allow incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw enable
+
+# Установка и настройка Logwatch
+sudo apt install -y logwatch
+sudo cp /usr/share/logwatch/default.conf/logwatch.conf 
+/etc/logwatch/conf/logwatch.conf
+sudo nano /etc/logwatch/conf/logwatch.conf
+# Настройте адрес электронной почты для получения отчетов и другие 
+параметры
+
+# Установка и настройка резервного копирования
+sudo apt install -y rsync
+# Добавьте команды для регулярного создания резервных копий в удобном вам 
+формате
+
+# Создание пользователей с ограниченными правами доступа
+sudo adduser gorodetskiy # Замените "user1" на нужное имя пользователя
+sudo adduser gorodetskiy sudo # Назначение пользователя в группу sudo для 
+выполнения привилегированных задач
+
+# Запрет входа пользователя root по SSH
+sudo sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' 
+/etc/ssh/sshd_config
+sudo systemctl restart sshd
+
+# Отключение ненужных служб и сервисов
+# sudo systemctl disable  # Замените  на конкретное имя сервиса
+
+# Дополнительные настройки по необходимости
+
+# Перезагрузка сервера для применения изменений
+sudo reboot
+
